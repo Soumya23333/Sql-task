@@ -14,9 +14,9 @@ const createUser = async (req, res) => {
         });
         if (existingUser) {
             return res.status(400).json({
-                success: false,
-                statuscode: 400,
-                message: "Email already exists"
+            success: false,
+            statuscode: 400,
+            message: "Email already exists"
             });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -169,7 +169,7 @@ const loginUser = async (req, res) => {
         }
 // Create access token
         const accessToken = jwt.sign(
-            { userId: user._id,
+            { userId: user.id,
                 role: user.role
             },
             process.env.JWT_SECRET,
@@ -177,7 +177,7 @@ const loginUser = async (req, res) => {
         );
 // Create refresh token
         const refreshToken = jwt.sign(
-            { userId: user._id,
+            { userId: user.id,
                 role: user.role
             },
             process.env.JWT_SECRET,
@@ -185,7 +185,6 @@ const loginUser = async (req, res) => {
         );
 // Store session in database
 console.log("USER ID:", user.id);
-
 await Session.create({
     userid: user.id,
     refreshtoken: refreshToken,
@@ -208,7 +207,6 @@ if this wasn't you please ignore it `
             accessToken: accessToken,
             refreshToken: refreshToken
         });
-
     } catch (error) {
         console.log(error);
 
@@ -228,7 +226,6 @@ const forgotPassword = async (req, res) => {
         const user = await User.findOne({
             where:{email }
     });
-
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -236,12 +233,10 @@ const forgotPassword = async (req, res) => {
                 message: "User not found"
             });
         }
-
 // Generate 6 digit OTP
         const otp = crypto
             .randomInt(100000, 1000000)
             .toString();
-
 // Delete previous OTP
 await Otp.destroy({
     where: {
@@ -258,30 +253,23 @@ await Otp.destroy({
             otp,
             expiresAt
         });
-
-    // Send OTP email
+  // Send OTP email
         await sendEmail(
             user.email,
             "Password Reset OTP",
             `Hello ${user.name},
 
 Your OTP is:
-
 ${otp}
-
 This OTP will expire in 10 minutes.
-
 If you did not request a password reset, please ignore this email.`
         );
-
         res.status(200).json({
             success: true,
             statuscode: 200,
             message: "OTP sent to your email"
-
-        });
-
-    } catch (error) {
+});
+   } catch (error) {
         console.log(error);
 
         res.status(500).json({
@@ -327,7 +315,6 @@ const resetPassword = async (req, res) => {
                     id: otpRecord.id
                 }
             });
-
             return res.status(400).json({
                 success: false,
                 statuscode: 400,
@@ -340,7 +327,6 @@ const resetPassword = async (req, res) => {
                 email
             }
         });
-
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -368,20 +354,15 @@ const resetPassword = async (req, res) => {
             user.email,
             "Password Updated Successfully",
             `Hello ${user.name},
-
 Your password has been successfully updated.
-
 If you made this change, no further action is required.
-
 If you did not change your password, please contact support immediately.`
         );
-
         res.status(200).json({
             success: true,
             statuscode: 200,
             message: "Password updated successfully"
         });
-
     } catch (error) {
         console.log(error);
 

@@ -1,18 +1,21 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database");
-const Otp = sequelize.define("Otp", {
-    email: {
+const Document = sequelize.define("Document", {
+      file_name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    otp: {
+      file_type: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    expiresAt: {
-        type: DataTypes.DATE,
+      file_path: {
+        type: DataTypes.STRING,
         allowNull: false
-    }
+    },
+      user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+},
 });
-module.exports = Otp;
-
+module.exports = Document;

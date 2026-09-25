@@ -10,7 +10,6 @@ const protect =async(req,res,next)=>{
             });
         }
         const token = authheader.split(" ")[1];
-
         const decode = jwt.verify(
             token,
             process.env.JWT_SECRET
@@ -24,8 +23,6 @@ const protect =async(req,res,next)=>{
             message:"invalid token "
         });
     }
-
-
 };
 const adminOnly = (req, res, next) => {
     if (req.user.role !== "admin") {
@@ -35,7 +32,6 @@ const adminOnly = (req, res, next) => {
             message: "Admin access required"
         });
     }
-
     next();
 };
     module.exports = {

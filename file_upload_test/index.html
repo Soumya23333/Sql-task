@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload Test</title>
+</head>
+<body>
+
+    <h2>Upload Document</h2>
+
+    <input type="file" id="document">
+
+    <button onclick="uploadFile()">Upload</button>
+
+    <p id="result"></p>
+
+    <script>
+        async function uploadFile() {
+
+            const fileInput = document.getElementById("document");
+
+            if (!fileInput.files[0]) {
+                alert("Please select a file");
+                return;
+            }
+
+            const formData = new FormData();
+
+            formData.append("document", fileInput.files[0]);
+
+            const token =("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MDMzNDAzNywiZXhwIjoxNzkwMzM0OTM3fQ.FKfYesplhKyYqPImx4XDpEUU2ZIPJrAdqREgMbX5p-U");
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:2000/document",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+
+                        body: formData
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log(data);
+
+                document.getElementById("result").innerText =
+                    JSON.stringify(data, null, 2);
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("result").innerText =
+                    "Upload failed";
+            }
+        }
+    </script>
+
+</body>
+</html>
+```
